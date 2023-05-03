@@ -50,6 +50,9 @@ public class AppDbContext : DbContext
                 .HasForeignKey(o => o.UserId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            entity.Property(e => e.OrderCost)
+                .HasColumnType("money");
+
             entity.Property(e => e.ItemsDescription)
                 .HasMaxLength(1000);
 
