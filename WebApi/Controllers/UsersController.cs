@@ -31,8 +31,8 @@ public class UsersController : ControllerBase
         var result = await _userService.GetUserByIdAsync(id);
 
         return result.Success
-            ? Ok(result.Data)   
-            : NotFound();
+            ? Ok(result.Data)
+            : BadRequest(result.ErrorInfo.Error);
     }
 
     [HttpPost]
@@ -61,7 +61,7 @@ public class UsersController : ControllerBase
         var result = await _userService.DeleteUserAsync(id);
 
         return result.Success
-            ? NoContent()
+            ? Ok()
             : BadRequest(result.ErrorInfo.Error);
     }
 }

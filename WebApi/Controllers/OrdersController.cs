@@ -28,7 +28,7 @@ public class OrdersController : ControllerBase
     {
         var result = await _orderService.GetOrdersByUserIdAsync(userId);
 
-        return result.Success ? Ok(result.Data) : NotFound();
+        return result.Success ? Ok(result.Data) : BadRequest(result.ErrorInfo.Error);
     }
 
     [HttpPost]
@@ -52,6 +52,6 @@ public class OrdersController : ControllerBase
     {
         var result = await _orderService.DeleteOrderAsync(id);
 
-        return result.Success ? NoContent() : BadRequest(result.ErrorInfo.Error);
+        return result.Success ? Ok() : BadRequest(result.ErrorInfo.Error);
     }
 }

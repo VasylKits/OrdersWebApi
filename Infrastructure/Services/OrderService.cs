@@ -50,6 +50,11 @@ public class OrderService : IOrderService
     {
         try
         {
+            var user = await _userRepository.GetByIdAsync(userId);
+
+            if (!user.Success)
+                return Result<List<OrderResponse>>.CreateFailed(ErrorModel.UserNotFound);
+
             var orders = await _orderRepository.GetOrdersByUserIdAsync(userId);
 
             if (orders.Count == 0)
