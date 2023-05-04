@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Application.DTOs;
 using Application.Interfaces;
+using Application.Common.Result.Implementations;
 
 namespace WebApi.Controllers;
 
@@ -15,28 +16,34 @@ public class UsersController : ControllerBase
         _userService = userService;
     }
 
+    [ProducesResponseType(typeof(List<UserResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpGet]
-    public async Task<ActionResult<List<UserResponse>>> GetAllUsersAsync()
+    public async Task<ActionResult> GetAllUsersAsync()
     {
         var result = await _userService.GetUsersAsync();
 
-        return result.Success 
-            ? Ok(result.Data) 
+        return result.Success
+            ? Ok(result.Data)
             : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpGet("{id}")]
-    public async Task<ActionResult<UserResponse>> GetByIdAsync([FromRoute] int id)
+    public async Task<ActionResult> GetByIdAsync([FromRoute] int id)
     {
         var result = await _userService.GetUserByIdAsync(id);
 
         return result.Success
-            ? Ok(result.Data)   
-            : NotFound();
+            ? Ok(result.Data)
+            : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpPost]
-    public async Task<ActionResult<UserResponse>> CreateAsync([FromBody] UserAddDto userAddDto)
+    public async Task<ActionResult> CreateAsync([FromBody] UserAddDto userAddDto)
     {
         var result = await _userService.AddUserAsync(userAddDto);
 
@@ -45,8 +52,10 @@ public class UsersController : ControllerBase
             : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(typeof(UserResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpPut]
-    public async Task<ActionResult<UserResponse>> UpdateAsync([FromBody] UserEditDto userEditDto)
+    public async Task<ActionResult> UpdateAsync([FromBody] UserEditDto userEditDto)
     {
         var result = await _userService.UpdateUserAsync(userEditDto);
 
@@ -55,13 +64,15 @@ public class UsersController : ControllerBase
             : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
     public async Task<ActionResult> DeleteAsync([FromRoute] int id)
     {
         var result = await _userService.DeleteUserAsync(id);
 
         return result.Success
-            ? NoContent()
+            ? Ok()
             : BadRequest(result.ErrorInfo.Error);
     }
 }
