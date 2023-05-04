@@ -1,4 +1,5 @@
-﻿using Application.DTOs;
+﻿using Application.Common.Result.Implementations;
+using Application.DTOs;
 using Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,14 +16,18 @@ public class OrdersController : ControllerBase
         _orderService = orderService;
     }
 
+    [ProducesResponseType(typeof(List<OrderResponse>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpGet]
-    public async Task<ActionResult<List<OrderResponse>>> GetAllAsync()
+    public async Task<ActionResult> GetAllAsync()
     {
         var result = await _orderService.GetOrdersAsync();
 
         return result.Success ? Ok(result.Data) : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpGet("{userId}")]
     public async Task<ActionResult<List<OrderResponse>>> GetOrdersByUserIdAsync([FromRoute] int userId)
     {
@@ -31,6 +36,8 @@ public class OrdersController : ControllerBase
         return result.Success ? Ok(result.Data) : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpPost]
     public async Task<ActionResult<OrderResponse>> CreateAsync([FromBody] OrderAddDto orderDto)
     {
@@ -39,6 +46,8 @@ public class OrdersController : ControllerBase
         return result.Success ? Ok(result.Data) : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(typeof(OrderResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpPut]
     public async Task<ActionResult<OrderResponse>> UpdateAsync([FromBody] OrderEditDto orderEditDto)
     {
@@ -47,8 +56,10 @@ public class OrdersController : ControllerBase
         return result.Success ? Ok(result.Data) : BadRequest(result.ErrorInfo.Error);
     }
 
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ErrorInfo), StatusCodes.Status400BadRequest)]
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteAsync([FromRoute]int id)
+    public async Task<ActionResult> DeleteAsync([FromRoute] int id)
     {
         var result = await _orderService.DeleteOrderAsync(id);
 
